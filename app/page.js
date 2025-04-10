@@ -1,8 +1,7 @@
+import Blogs from "@/components/Blogs";
 
 const HomePage = () => {
-  return (
-    <div>HomePage</div>
-  )
+  return <Blogs/>
 }
 
 export default HomePage

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import { useEffect, useState } from "react";
 
 const navLinks = [
   {
@@ -19,6 +19,25 @@ const navLinks = [
 ];
 
 const Navbar = ({ children }) => {
+  const [session, setSession] = useState(null);
+  console.log(session);
+
+  useEffect(() => {
+    const cookies = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("session="));
+
+    if (cookies) {
+      try {
+        const cookieValue = decodeURIComponent(cookies.split("=")[1]);
+        const parsedSession = JSON.parse(cookieValue);
+        setSession(parsedSession);
+      } catch (err) {
+        console.error("Failed to parse session cookie", err);
+      }
+    }
+  }, []);
+
   const pathName = usePathname();
 
   const blackList = ["/login", "/admin"];
@@ -62,7 +81,6 @@ const Navbar = ({ children }) => {
           </Link>
         </div>
       </nav>
-      
     </header>
   );
 };

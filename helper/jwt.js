@@ -10,5 +10,12 @@ import jwt from "jsonwebtoken";
 };
 
 
+const verifyToken = (token) => {
+  const decode = jwt.verify(token, accessToken);
+  return decode
+ 
+};
 
-export {createToken}
+
+
+export {createToken,verifyToken}

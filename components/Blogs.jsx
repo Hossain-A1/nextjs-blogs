@@ -1,9 +1,44 @@
-import React from 'react'
+"use client";
+import { useFetch } from "@/lib/swr";
+import Image from "next/image";
+import Link from "next/link";
 
 const Blogs = () => {
+  const { data: blogs, error, isLoading } = useFetch("/api/blog");
+  if (isLoading) {
+    <p>Loading..</p>;
+  }
+  if (error) {
+    return <p>Something went wrong!</p>;
+  }
   return (
-    <div>Blog s Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae, dolore cumque consequatur obcaecati unde laboriosam inventore illo ratione adipisci maxime odit saepe quidem tenetur atque vitae modi dolorum architecto illum, totam dolor? Illum doloremque perferendis aspernatur deserunt voluptatum facilis reprehenderit esse ad, placeat cumque, ut porro? Expedita, provident autem! Sit dolore sequi a perferendis quasi, iusto mollitia quidem officiis fugiat beatae reprehenderit earum possimus tempore ad sed nulla est pariatur, ipsum eveniet ex, blanditiis atque! Dicta laboriosam sed voluptate ipsa qui tempora velit facilis ullam nisi mollitia eveniet amet molestias enim, optio iusto culpa similique commodi sequi tenetur illo officia quidem corporis! Quia placeat ipsa fugit et quaerat. Ducimus, dolor quas? Expedita maxime assumenda esse libero, voluptate a iste nam sint eveniet quibusdam commodi aliquid, quos modi molestiae hic impedit? Dicta, deleniti dolores. Necessitatibus totam aliquid ratione? Quo maiores minus impedit rerum veritatis totam quaerat, aspernatur excepturi sint sapiente tempore ducimus. Culpa nemo, optio odio alias non unde. Molestiae repellat veritatis voluptatibus perferendis possimus recusandae voluptas voluptatem nesciunt aperiam eaque? Saepe provident reprehenderit in, minima cupiditate atque, mollitia libero rem similique quam, corrupti omnis. Quam eum quos et voluptate ea qui earum animi, molestias modi dolore, dolor quia quidem neque vel recusandae suscipit minus cum! Earum doloremque consequatur nulla nobis reiciendis exercitationem quisquam. Atque consequatur, quasi repudiandae optio id quam maiores qui quo aspernatur, odio autem. Id voluptas corporis impedit. Totam unde veritatis dicta in temporibus, autem non architecto nemo asperiores fugit perferendis ipsam numquam inventore corporis saepe libero quidem harum assumenda illo animi eligendi quasi et? Saepe nostrum, quia ullam sed quo distinctio corporis dolorum numquam modi perferendis praesentium maiores tenetur esse, nemo magnam rerum excepturi fugiat! Pariatur laboriosam necessitatibus, odio nesciunt rerum animi, est itaque enim ullam neque expedita dolorem corporis accusamus laudantium recusandae nihil nisi illo voluptates?</div>
-  )
-}
+    <div className='grid lg:grid-cols-3  gap-5 mt-5 lg:mt-10'>
+      {blogs &&
+        blogs.map((blog) => (
+          <Link
+            href={`/blog/${blog.title.split(" ").join("-")}`}
+            key={blog._id}
+            className='block shadow-sm rounded p-4 hover:shadow-lg transition-all duration-500 space-y-2 cursor-pointer'
+          >
+            <h1 className='text-2xl font-semibold'>
+              {blog.title.slice(0, 70)}
+            </h1>
 
-export default Blogs
+            <figure className='max-w-2xl h-64'>
+              <Image
+                height={700}
+                width={1200}
+                src={blog.image}
+                alt={blog.title}
+                className='h-full w-full object-cover'
+                priority
+              />
+            </figure>
+            <p className='text-base'>{blog.description.slice(0, 150)}...</p>
+          </Link>
+        ))}
+    </div>
+  );
+};
+
+export default Blogs;

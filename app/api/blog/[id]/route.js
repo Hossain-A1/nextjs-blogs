@@ -2,7 +2,9 @@ import { errorResponse, successResponse } from "@/helper/response";
 import { connectDB } from "@/lib/db";
 import blogModel from "@/schema/blog.schema";
 import mongoose from "mongoose";
-
+const isMongoId = (id) => {
+  return mongoose.Types.ObjectId.isValid(id);
+};
 const PUT = async (req, { params }) => {
   try {
     await connectDB();
@@ -65,16 +67,12 @@ const GET = async (req, { params }) => {
   try {
     await connectDB();
 
-    const id = await params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return errorResponse({
-        statusCode: 403,
-        message: "Invalid mongodb _id",
-      });
-    }
+    const id = isMongoId(params.id);
 
-    const blog = await blogModel.findOne(id ? { _id: id } : { title: id });
-
+    const query = id
+      ? { _id: params.id }
+      : { title: params.id.split("-").join(" ") };
+    const blog = await blogModel.findOne(query);
     if (!blog) {
       return errorResponse({
         statusCode: 404,
