@@ -11,11 +11,13 @@ export const POST = async (req) => {
     }
     const session = verifyToken(token);
 
-    return successResponse({
+
+ return   successResponse({
       statusCode: 200,
       message: "Session was retun successfully",
       payload: session,
     });
+
   } catch (error) {
     return errorResponse({
       statusCode: 401,

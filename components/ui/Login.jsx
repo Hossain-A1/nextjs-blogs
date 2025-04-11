@@ -1,6 +1,6 @@
 "use client";
 import toast from "react-hot-toast";
-import { server_url } from "@/secret/secret";
+import { adminEmail, server_url } from "@/secret/secret";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -9,9 +9,9 @@ const Login = () => {
   const [state, setState] = useState("Login");
   const [isError, setIsError] = useState("");
   const [formData, setFormData] = useState({
-    name:"",
-    email:"",
-    password:"",
+    name: "",
+    email: "",
+    password: "",
   });
   console.log("backend error found" + isError);
   const getInputValue = (e) => {
@@ -27,12 +27,18 @@ const Login = () => {
     e.preventDefault();
     try {
       let url = server_url;
-      url = state === "Login" ? "/api/login" : "/api/auth";
+
+      if (state === "Login" && formData.email === adminEmail) {
+        url = "/api/admin";
+      } else {
+        url = state === "Login" ? "/api/login" : "/api/auth";
+      }
 
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        credentials: "include",
       });
 
       const data = await res.json();

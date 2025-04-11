@@ -1,11 +1,14 @@
 import { matchPassword } from "@/helper/hashPassword";
-import { createToken } from "@/helper/jwt";
+import { createToken, verifyToken } from "@/helper/jwt";
 import { errorResponse, successResponse } from "@/helper/response";
 import { connectDB } from "@/lib/db";
+import { isLoggedIn } from "@/middleware/isLoggedIn";
 import userModel from "@/schema/user.schema";
 
 export const POST = async (req) => {
   try {
+    const loggedin = isLoggedIn();
+    if (loggedin) return loggedin;
     await connectDB();
     const body = await req.json();
 
@@ -55,6 +58,13 @@ export const POST = async (req) => {
       path: "/",
     });
 
+    const session = verifyToken(token.accessT);
+    response.cookies.set("session", JSON.stringify(session), {
+      maxAge: 7 * 24 * 60 * 60,
+      secure: false,
+      httpOnly: false,
+      path: "/",
+    });
     return response;
   } catch (error) {
     console.log(error);

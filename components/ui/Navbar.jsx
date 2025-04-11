@@ -20,8 +20,6 @@ const navLinks = [
 
 const Navbar = ({ children }) => {
   const [session, setSession] = useState(null);
-  console.log(session);
-
   useEffect(() => {
     const cookies = document.cookie
       .split("; ")
@@ -73,12 +71,16 @@ const Navbar = ({ children }) => {
               {link.label}
             </Link>
           ))}
-          <Link
-            href='/login'
-            className='bg-violet-700 text-white font-medium py-3 px-8 rounded'
-          >
-            Login
-          </Link>
+          {session ? (
+            <p className="">{session.email}</p>
+          ) : (
+            <Link
+              href='/login'
+              className='bg-violet-700 text-white font-medium py-3 px-8 rounded'
+            >
+              Login
+            </Link>
+          )}
         </div>
       </nav>
     </header>

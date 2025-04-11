@@ -3,8 +3,9 @@ import { server_url } from "./secret/secret";
 export const config = {
   matcher: "/admin/:path*",
 };
+
 export const middleware = async (request) => {
-  const accessTkn = request.cookies.get("accessToken");
+  const accessTkn = request.cookies.get("adminToken");
 
   if (!accessTkn) {
     return res.redirect(new URL("/login", request.url));
@@ -21,15 +22,19 @@ export const middleware = async (request) => {
   if (!api.ok) {
     return res.redirect(new URL("/login", request.url));
   }
+  
 
   const body = await api.json();
-  // if (!body?.payload) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
-  
-  const session = res.next();
-  session.cookies.set("session", JSON.stringify(body), {
-    maxAge: 7 * 24 * 60 * 60,
-  });
-  return session;
+  if (!body?.payload) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return res.next();
+  // session.cookies.set("session", JSON.stringify(body.payload), {
+  //   maxAge: 7 * 24 * 60 * 60,
+  //   secure:false,
+  //   path: "/",
+  //   httpOnly: true,
+  // });
+  // return session;
 };
